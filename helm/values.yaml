@@ -8,7 +8,7 @@ image:
   repository: 052020821647.dkr.ecr.eu-west-1.amazonaws.com/tech-challenge/lgc
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.1" 
+  tag: "1.0.2" 
 
 imagePullSecrets: [name: awsecr-cred]
 nameOverride: ""

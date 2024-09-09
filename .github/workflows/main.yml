@@ -3,7 +3,7 @@ name: Deploy to ECR
 on:
  
   push:
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
   
@@ -37,3 +37,18 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+  deploy:
+    
+    name: Deploy Image
+    needs: [build]
+    runs-on: self-hosted
+
+   
+    steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Update deployment (using latest chart of actions-runner-controller-charts/auto-scaling-runner-set)
+            run: |
+              helm upgrade lgc --install --namespace lgc ./helm
