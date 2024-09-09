@@ -1,9 +1,8 @@
 name: Deploy to ECR
 
 on:
- 
   push:
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
   
@@ -12,7 +11,6 @@ jobs:
     name: Build Image
     runs-on: self-hosted
 
-   
     steps:
 
     - name: Check out code
@@ -33,7 +31,23 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: tech-challenge/lgc
-        IMAGE_TAG: 1.0.1
+        
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  deploy:
+    
+    name: Deploy Image
+    needs: [build]
+    runs-on: self-hosted
+
+    steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Update deployment (using latest chart of actions-runner-controller-charts/auto-scaling-runner-set)
+            run: |
+              helm upgrade lgc --install --namespace lgc ./helm --wait --set image.repository=${{secrets.ECR_REPOSITORY}}
+
+  
