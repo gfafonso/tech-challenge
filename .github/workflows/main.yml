@@ -50,4 +50,6 @@ jobs:
 
           - name: Update deployment (using latest chart of actions-runner-controller-charts/auto-scaling-runner-set)
             run: |
-              helm upgrade lgc --install --namespace lgc ./helm
+              helm upgrade lgc --install --namespace lgc ./helm --wait
+
+  
